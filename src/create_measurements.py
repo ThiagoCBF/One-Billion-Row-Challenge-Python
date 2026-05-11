@@ -12,7 +12,8 @@ def check_args(file_args):
         if len(file_args) != 2 or int(file_args[1]) <= 0:
             raise Exception()
     except:
-        print("Usage:  create_measurements.sh <positive integer number of records to create>")
+        print(
+            "Usage:  create_measurements.sh <positive integer number of records to create>")
         print("        You can use underscore notation for large number of records.")
         print("        For example:  1_000_000_000 for one billion")
         exit()
@@ -27,7 +28,7 @@ def build_weather_station_name_list():
         file_contents = file.read()
     for station in file_contents.splitlines():
         if "#" in station:
-            next
+            continue
         else:
             station_names.append(station.split(';')[0])
     return list(set(station_names))
@@ -91,29 +92,32 @@ def build_test_data(weather_station_names, num_rows_to_create):
     coldest_temp = -99.9
     hottest_temp = 99.9
     station_names_10k_max = random.choices(weather_station_names, k=10_000)
-    batch_size = 10000 # instead of writing line by line to file, process a batch of stations and put it to disk
+    # instead of writing line by line to file, process a batch of stations and put it to disk
+    batch_size = 10000
     progress_step = max(1, (num_rows_to_create // batch_size) // 100)
     print('Criando o arquivo... isso vai demorar uns 10 minutos...')
 
     try:
         with open("./data/measurements.txt", 'w', encoding="utf-8") as file:
-            for s in range(0,num_rows_to_create // batch_size):
-                
+            for s in range(0, num_rows_to_create // batch_size):
+
                 batch = random.choices(station_names_10k_max, k=batch_size)
-                prepped_deviated_batch = '\n'.join([f"{station};{random.uniform(coldest_temp, hottest_temp):.1f}" for station in batch]) # :.1f should quicker than round on a large scale, because round utilizes mathematical operation
+                # :.1f should quicker than round on a large scale, because round utilizes mathematical operation
+                prepped_deviated_batch = '\n'.join(
+                    [f"{station};{random.uniform(coldest_temp, hottest_temp):.1f}" for station in batch])
                 file.write(prepped_deviated_batch + '\n')
-                
+
         sys.stdout.write('\n')
     except Exception as e:
         print("Something went wrong. Printing error info and exiting...")
         print(e)
         exit()
-    
+
     end_time = time.time()
     elapsed_time = end_time - start_time
     file_size = os.path.getsize("./data/measurements.txt")
     human_file_size = convert_bytes(file_size)
- 
+
     print("Arquivo escrito com sucesso data/measurements.txt")
     print(f"Tamanho final:  {human_file_size}")
     print(f"Tempo decorrido: {format_elapsed_time(elapsed_time)}")
