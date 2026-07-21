@@ -2,6 +2,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import min, max, avg
 import time
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType
+import sys
+sys.stdout.reconfigure(encoding="utf-8")
 
 def create_spark_df():
 

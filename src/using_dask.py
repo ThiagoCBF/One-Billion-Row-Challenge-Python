@@ -1,5 +1,7 @@
 import dask
 import dask.dataframe as dd
+import sys
+sys.stdout.reconfigure(encoding="utf-8")
 
 def create_dask_df():
     dask.config.set({'dataframe.query-planning': True})
